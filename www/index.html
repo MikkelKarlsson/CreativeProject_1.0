@@ -1,3 +1,10 @@
+
+
+<!--LINK TO THE DOCUMENTATION:
+    https://brm.io/matter-js/
+-->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,7 +36,7 @@
         //Making a solid ground for the objects
         //First 2 parameters is the position
         //Last 2 is the height and width
-        const ground = Matter.Bodies.rectangle(400, 600, 810, 60,{ isStatic: true});
+        const ground = Matter.Bodies.rectangle(1200, 500, 300, 20, { isStatic: true});
 
         //Adding 2 boxes using by doing it simply
         //const boxA = Matter.Bodies.rectangle(400, 200, 80, 80);
@@ -46,11 +53,26 @@
         render.mouse = mouse;
 
 
+        //Creating a ball and a slinger
+        //Placing the ball on the left side of the screen
+        const ball = Matter.Bodies.circle(300, 600, 20);
+
+        //Sling is created with the use of the constraint class
+        const sling = Matter.Constraint.create({
+            //Giving it a fixed point (Giving it the same position as the ball)
+            pointA: {x: 300, y: 600},
+            //Attaching the object (ball) to the sling
+            bodyB: ball,
+            //How hard is should shoot
+            stiffness: 0.05
+        });
+
+
         //Creating a stack of obstacle
         //First 2 arguments is position
         //Next 2 is number of stack colums and rows
         //Last to is the gap between them
-        const stack = Matter.Composites.stack(200, 200, 4, 4, 0, 0, 
+        const stack = Matter.Composites.stack(1100, 270, 4, 4, 0, 0, 
 
         //Adding it to a callback function
         function(x, y){
@@ -58,13 +80,52 @@
             return Matter.Bodies.rectangle(x, y, 80, 80);*/
 
             //Adding a random stack
-            const sides = Math.round(Matter.Common.random(2, 8));
-            return Matter.Bodies.polygon(x, y, sides, Matter.Common.random(20, 50));
-        })
+            /*const sides = Math.round(Matter.Common.random(2, 8));
+            return Matter.Bodies.polygon(x, y, sides, Matter.Common.random(20, 50));*/
 
+            //Adding a polygon stack
+            return Matter.Bodies.polygon(x, y, 8, 30);
+
+
+        });
+
+        /*//Setting fire as false
+        const firing = false;
+        //Creating an mouseevent that says if what you are clicking is the ball, set fire = true
+        Matter.Events.on(mouseConstraint, "enddrag", function(e){
+            if(e.body === ball) firing = true;
+        });*/
+
+        let firing = false;
+Matter.Events.on(mouseConstraint,'enddrag', function(e) {
+  if(e.body === ball) firing = true;
+});
+
+        /*//Checking the position of the ball of every screenupdate
+        Matter.Events.on(engine, "afterUpdate", function(){
+            //If the firing flag is true and the ball position is very close to the orginal point. If the condition is met, then the ball releases from the sling and replaces it with the new one.
+            if(firing && Math.abs(ball.position.x - 300) < 20 && Math.abs(ball.position.y - 600) < 20){
+                ball = Matter.Bodies.circle(300, 600, 20);
+                //Adding the new ball
+                Matter.World.add(engine.world, ball);
+                //Setting the sling to the new ball
+                sling.bodyB = ball;
+                //Reseting the firing flag
+                firing = false;
+            }
+        });*/
+
+        Matter.Events.on(engine,'afterUpdate', function() {
+  if (firing && Math.abs(ball.position.x-300) < 20 && Math.abs(ball.position.y-600) < 20) {
+      ball = Matter.Bodies.circle(300, 600, 20);
+      Matter.World.add(engine.world, ball);
+      sling.bodyB = ball;
+      firing = false;
+  }
+});
 
         //Adding all the objects to the world
-        Matter.World.add(engine.world, [stack, ground, mouseConstraint]);
+        Matter.World.add(engine.world, [stack, ground, ball, sling, mouseConstraint]);
 
         //Running the engines
         Matter.Engine.run(engine);
