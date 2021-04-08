@@ -11,6 +11,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Angry KENZYY 1.0</title>
+
+    <style>
+        body {
+            overflow: hidden; /* Hide scrollbars */   
+        }
+    </style>
+
 </head>
 <body>
     <!--Importing matter js-->
@@ -28,8 +35,8 @@
 
             //Increasing the size of the canvas
             options: {
-                width: 1887,
-                height: 930,
+                width: 1903,
+                height: 1000,
                 wireframes: false
             }
         });
@@ -42,7 +49,6 @@
         //Adding 2 boxes using by doing it simply
         //const boxA = Matter.Bodies.rectangle(400, 200, 80, 80);
         //const boxB = Matter.Bodies.rectangle(400, 50, 80, 80);
-
 
         //Creating a ball and a slinger
         //Placing the ball on the left side of the screen
@@ -59,8 +65,6 @@
             stiffness: 0.05
         });
 
-
-
         //Creating Mouse Object
         const mouse = Matter.Mouse.create(render.canvas);
         const mouseConstraint = Matter.MouseConstraint.create(engine, {
@@ -70,9 +74,6 @@
             }
         });
         render.mouse = mouse;
-
-
-
 
         //Setting fire as false
         let firing = false;
@@ -95,7 +96,6 @@
             }
         });
 
-
         //Creating a stack of obstacle
         //First 2 arguments is position
         //Next 2 is number of stack colums and rows
@@ -108,11 +108,14 @@
             return Matter.Bodies.rectangle(x, y, 80, 80);*/
 
             //Adding a random stack
-            /*const sides = Math.round(Matter.Common.random(2, 8));
-            return Matter.Bodies.polygon(x, y, sides, Matter.Common.random(20, 50));*/
+            //const sides = Math.round(Matter.Common.random(2, 8));
+            //return Matter.Bodies.polygon(x, y, sides, Matter.Common.random(20, 50));
 
             //Adding a polygon stack
             return Matter.Bodies.polygon(x, y, 8, 30);
+
+            //Adding a trapezoid stack
+            //return Matter.Bodies.trapezoid(x, y, 200, 220, 0.5);
         });
 
         //Adding all the objects to the world
@@ -121,10 +124,7 @@
         //Running the engines
         Matter.Engine.run(engine);
         Matter.Render.run(render);
-        
 
     </script>
-
-    
 </body>
 </html>
